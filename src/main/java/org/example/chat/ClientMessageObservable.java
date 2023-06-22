@@ -31,7 +31,7 @@ public class ClientMessageObservable {
 
     public void broadcastMessageFrom(final String clientIdentifier, final String message){
         observableSuport.firePropertyChange(clientIdentifier, clientIdentifier, message);
-        
+
     }
 
 }

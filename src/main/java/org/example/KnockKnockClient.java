@@ -2,6 +2,9 @@ package org.example;
 
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+
 import org.example.KnockKnockProtocol;
 
 /*
@@ -27,19 +30,20 @@ public class KnockKnockClient {
             BufferedReader stdIn = new BufferedReader(
                     new InputStreamReader(System.in));
             String fromServer;
-            String fromUser;
+
+            InputCollector inputCollector = new InputCollector(out::println);
+            inputCollector.start();
+
+
 
             while ((fromServer = in.readLine()) != null) {
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("Bye."))
                     break;
-
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
-                }
             }
+
+            inputCollector.stopCollecting();
+
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -49,5 +53,32 @@ public class KnockKnockClient {
             System.exit(1);
         }
     }
+
+    public static class InputCollector extends Thread {
+        private final Consumer<String> inputConsumer;
+        private final AtomicBoolean running = new AtomicBoolean(false);
+
+        public InputCollector(final Consumer<String> inputConsumer){
+            super("InputCollector");
+            this.inputConsumer = inputConsumer;
+        }
+
+        public void run() {
+            running.set(true);
+            try(BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))){
+                String input = null;
+                while (running.get() && (input = stdIn.readLine()) != null){
+                    inputConsumer.accept(input);
+                }
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        public void stopCollecting(){
+            running.set(false);
+        }
+    }
+
 }
 

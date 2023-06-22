@@ -33,8 +33,12 @@ package org.example;
 
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class KKMultiServer {
+
+    private static final AtomicLong IDENTIFIER = new AtomicLong(1L);
+
     public static void main(String[] args) throws IOException {
 
         if (args.length != 1) {
@@ -47,11 +51,19 @@ public class KKMultiServer {
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
-                new KKMultiServerThread(serverSocket.accept()).start();
+                new KKMultiServerThread(serverSocket.accept(), getNextIdentifier()).start();
             }
         } catch (IOException e) {
             System.err.println("Could not listen on port " + portNumber);
             System.exit(-1);
         }
     }
+
+    private static synchronized long getNextIdentifier() {
+        long value = IDENTIFIER.getAndIncrement();
+        IDENTIFIER.compareAndSet(Long.MAX_VALUE, 0);
+
+        return value;
+    }
+
 }

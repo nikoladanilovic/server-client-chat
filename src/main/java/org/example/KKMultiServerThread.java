@@ -31,15 +31,20 @@
 
 package org.example;
 
+import org.example.chat.ClientMessageObservable;
+import org.example.chat.ClientMessageObserver;
+
 import java.net.*;
 import java.io.*;
 
 public class KKMultiServerThread extends Thread {
-    private Socket socket = null;
+    private final Socket socket;
+    private final String identifier;
 
-    public KKMultiServerThread(Socket socket) {
+    public KKMultiServerThread(Socket socket, long identifier) {
         super("KKMultiServerThread");
         this.socket = socket;
+        this.identifier = "client_" + identifier;
     }
 
     public void run() {
@@ -50,17 +55,28 @@ public class KKMultiServerThread extends Thread {
                         new InputStreamReader(
                                 socket.getInputStream()));
         ) {
-            String inputLine, outputLine;
+            ClientMessageObserver messageObserver = ClientMessageObserver.of(
+                    (clientID, message) -> {
+                        if(!identifier.equals(clientID))
+                            out.println(clientID + ": " + message);
+                    });
+            messageObserver.attach();
+
+            String inputLine;
+            String outputLine;
+
             KnockKnockProtocol kkp = new KnockKnockProtocol();
             outputLine = kkp.processInput(null);
-            out.println(outputLine);
+            out.println(String.format("Hello %s", identifier));
 
             while ((inputLine = in.readLine()) != null) {
                 outputLine = kkp.processInput(inputLine);
                 out.println(outputLine);
                 if (outputLine.equals("Bye"))
                     break;
+                ClientMessageObservable.getInstance().broadcastMessageFrom(identifier, inputLine);
             }
+            messageObserver.detach();
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
