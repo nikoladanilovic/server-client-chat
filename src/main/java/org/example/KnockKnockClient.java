@@ -34,8 +34,6 @@ public class KnockKnockClient {
             InputCollector inputCollector = new InputCollector(out::println);
             inputCollector.start();
 
-
-
             while ((fromServer = in.readLine()) != null) {
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("Bye."))

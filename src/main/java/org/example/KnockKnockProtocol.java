@@ -20,16 +20,19 @@ public class KnockKnockProtocol {
     public String processInput(String theInput) {
         String theOutput = null;
 
+        if("exit".equals(theInput))
+            return "Bye";
+
         if (state == WAITING) {
             theOutput = "Knock! Knock!";
             state = SENTKNOCKKNOCK;
-        } else if (state == SENTKNOCKKNOCK) {
+        }
+        else if (state == SENTKNOCKKNOCK) {
             if (theInput.equalsIgnoreCase("Who's there?")) {
                 theOutput = clues[currentJoke];
                 state = SENTCLUE;
             } else {
-                theOutput = "You're supposed to say \"Who's there?\"! "
-                        + "Try again. Knock! Knock!";
+                theOutput = " ";
             }
         } else if (state == SENTCLUE) {
             if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {

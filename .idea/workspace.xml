@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="bef335e7-9c85-4b46-86f4-d446ab27b179" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KKMultiServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KKMultiServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KKMultiServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KKMultiServerThread.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KnockKnockClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KnockKnockClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KnockKnockClient2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/chat/ClientMessageObservable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/chat/ClientMessageObservable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KnockKnockProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KnockKnockProtocol.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,16 +51,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Client2" type="Application" factoryName="Application">
-      <option name="ALTERNATIVE_JRE_PATH" value="11" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="org.example.KnockKnockClient2" />
-      <module name="ServerClientChat.main" />
-      <option name="PROGRAM_PARAMETERS" value="127.0.0.1 4444" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="MultiServer" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -77,7 +64,6 @@
     <list>
       <item itemvalue="Application.MultiServer" />
       <item itemvalue="Application.Client1" />
-      <item itemvalue="Application.Client2" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
