@@ -5,6 +5,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+/**
+ * Class that provides and implements observer of the type {@link PropertyChangeListener}
+ */
 public class ClientMessageObserver implements PropertyChangeListener {
     private final BiConsumer<String, String> messageConsumer;
 
@@ -16,14 +19,24 @@ public class ClientMessageObserver implements PropertyChangeListener {
         return new ClientMessageObserver(messageConsumer);
     }
 
+    /**
+     * Method used to attach observer to singleton observable.
+     */
     public void attach() {
         ClientMessageObservable.getInstance().addObserver(this);
     }
 
+    /**
+     * Method used to detach observer from singleton observable
+     */
     public void detach() {
         ClientMessageObservable.getInstance().removeObserver(this);
     }
 
+    /**
+     * executes attachment, running and deattachment of the observer (listener) from the observable
+     * @param logic
+     */
     public void executeWrapped(Runnable logic){
         if(Objects.isNull(logic))
             return;
