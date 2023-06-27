@@ -11,18 +11,39 @@ import org.example.KnockKnockProtocol;
 * Kada se pokreće KnockKnockClient pri run-anju treba postaviti argumente 127.0.0.1 4444
 * */
 public class KnockKnockClient {
+    private static final byte[] BUFFER = new byte[256];
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 2) {
-            System.err
-                    .println("Usage: java EchoClient <host name> <port number>");
-            System.exit(1);
+        //if (args.length != 2) {
+        //    System.err
+        //            .println("Usage: java EchoClient <host name> <port number>");
+        //    System.exit(1);
+        //}
+
+        //String hostName = args[0];
+        //int portNumber = Integer.parseInt(args[1]);
+
+        InetAddress address;
+        String receivedData;
+
+        try(DatagramSocket socket = new DatagramSocket(null)){
+            socket.setReuseAddress(true);
+            socket.bind(new InetSocketAddress(6666));
+            DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
+            socket.receive(packet);
+
+            address = packet.getAddress();
+            int port = packet.getPort();
+            packet = new DatagramPacket(BUFFER, BUFFER.length, address, port);
+            receivedData = new String(packet.getData(), 0, packet.getLength());
         }
 
-        String hostName = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+        System.out.println(receivedData);
+        String[] receivedDataParts = receivedData.split("__");
+        String serverName = receivedDataParts[0];
+        int portNumber = Integer.parseInt(receivedDataParts[1]);
 
-        try (Socket kkSocket = new Socket(hostName, portNumber);
+        try (Socket kkSocket = new Socket(serverName, portNumber);
              PrintWriter out = new PrintWriter(
                      kkSocket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
@@ -43,11 +64,11 @@ public class KnockKnockClient {
             inputCollector.stopCollecting();
 
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + hostName);
+            System.err.println("Don't know about host " + serverName);
             System.exit(1);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to "
-                    + hostName);
+                    + serverName);
             System.exit(1);
         }
     }

@@ -41,7 +41,7 @@ public class KKMultiServer {
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 1) {
+        if (args.length != 2) {
             System.err.println("Usage: java KKMultiServer <port number>");
             System.exit(1);
         }
@@ -50,7 +50,8 @@ public class KKMultiServer {
         String serverName = args[1];
         boolean listening = true;
 
-
+        LocationBroadcast broadcast = new LocationBroadcast(portNumber, serverName);
+        broadcast.start();
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
@@ -58,6 +59,7 @@ public class KKMultiServer {
             }
         } catch (IOException e) {
             System.err.println("Could not listen on port " + portNumber);
+            broadcast.stopBroadcasting();
             System.exit(-1);
         }
     }
