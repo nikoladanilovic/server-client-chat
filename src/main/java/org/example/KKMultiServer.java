@@ -47,7 +47,10 @@ public class KKMultiServer {
         }
 
         int portNumber = Integer.parseInt(args[0]);
+        String serverName = args[1];
         boolean listening = true;
+
+
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
