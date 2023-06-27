@@ -29,8 +29,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.example;
+package org.example.server;
 
+import org.example.KnockKnockProtocol;
 import org.example.chat.ClientMessageObservable;
 import org.example.chat.ClientMessageObserver;
 
