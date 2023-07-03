@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bef335e7-9c85-4b46-86f4-d446ab27b179" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/5/250c72eaab9a4eb8416053f8780bcd020f4e8ad1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/7/77759b1382a4b2f502fee2e3e71fc635097ab764" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/3/f381ce829b507e1ba848e53a434d7f1156044f1f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/2/5/250c72eaab9a4eb8416053f8780bcd020f4e8ad1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/7/7/77759b1382a4b2f502fee2e3e71fc635097ab764" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/f/3/f381ce829b507e1ba848e53a434d7f1156044f1f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
-    </list>
+    <list default="true" id="f5586be5-0401-4936-b15b-f49bc2503b0e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,29 +20,17 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="ServerClientChat" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
       </state>
     </system>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectId" id="2RKL5iX9v9xBhgQf101UkhI1IRt" />
+  <component name="ProjectId" id="2S3JuQ30QPI7dbraNVS7OXgAnJL" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -60,17 +39,15 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/nikol/IdeaProjects/lwjgl_example1",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "last_opened_file_path": "C:/Users/nikol/IdeaProjects/enea-dedicated_game_server-main"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.Client1">
-    <configuration name="Client1" type="Application" factoryName="Application" singleton="false">
+  <component name="RunManager" selected="Application.MultiCastClient">
+    <configuration name="MultiCastClient" type="Application" factoryName="Application" singleton="false">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="org.example.KnockKnockClient" />
-      <module name="ServerClientChat.main" />
-      <option name="PROGRAM_PARAMETERS" value="127.0.0.1 4444" />
+      <option name="MAIN_CLASS_NAME" value="enea.dgs.knockknock.MultiCastClient" />
+      <module name="DedicatedGameServer.main" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -78,8 +55,8 @@
     <configuration name="MultiServer" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="org.example.server.KKMultiServer" />
-      <module name="ServerClientChat.main" />
+      <option name="MAIN_CLASS_NAME" value="enea.dgs.server.KKMultiServer" />
+      <module name="DedicatedGameServer.main" />
       <option name="PROGRAM_PARAMETERS" value="6666 127.0.0.1" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -87,29 +64,18 @@
     </configuration>
     <list>
       <item itemvalue="Application.MultiServer" />
-      <item itemvalue="Application.Client1" />
+      <item itemvalue="Application.MultiCastClient" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="bef335e7-9c85-4b46-86f4-d446ab27b179" name="Changes" comment="" />
-      <created>1686993647928</created>
+      <changelist id="f5586be5-0401-4936-b15b-f49bc2503b0e" name="Changes" comment="" />
+      <created>1688369552382</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1686993647928</updated>
+      <updated>1688369552382</updated>
     </task>
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>
