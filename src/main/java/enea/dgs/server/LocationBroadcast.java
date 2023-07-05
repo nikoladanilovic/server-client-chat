@@ -26,11 +26,11 @@ public class LocationBroadcast extends Thread {
             socket.setBroadcast(true);
             byte[] buffer = (serverName + "__" + tcpLocation).getBytes();
             InetAddress broadcastAddress = InetAddress.getByName("255.255.255.255");
+//            InetAddress broadcastAddress = InetAddress.getByName("192.168.0.255");
 //            InetAddress multicastAddress = InetAddress.getByName("239.255.255.255");
 
             while (running.get()) {
-                DatagramPacket packet = null;
-                packet = new DatagramPacket(buffer, buffer.length, broadcastAddress, 6666);
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, broadcastAddress, 6666);
                 socket.send(packet);
                 try {
                     sleep(1000L);

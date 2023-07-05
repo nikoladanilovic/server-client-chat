@@ -1,4 +1,4 @@
-package enea.dgs.knockknock;
+package enea.dgs.client;
 
 /*
  * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
@@ -36,42 +36,32 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
  * Client implementation using the UDP broadcast to find a server network location.
  */
-public class KnockKnockClient {
+public class Client {
 
-    private static final byte[] BUFFER = new byte[256];
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        Set<ServerLocation> serverLocations = new HashSet<>();
+        ServersCollector serverCollector = new ServersCollector(serverLocations::add);
+        serverCollector.start();
 
-        InetAddress address;
-        String receivedData;
-        // in case multiple clients try to bind the same address and port exception will occur for the second client
-        // (Address already in use), therefore "Reuse" flag is used in order to counter the problem
-        // (https://docs.oracle.com/javase/8/docs/api/java/net/DatagramSocket.html#setReuseAddress-boolean-)
-//        try (DatagramSocket socket = new DatagramSocket(6666)) {
-        try (DatagramSocket socket = new DatagramSocket(null)) {
-            socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(6666));
-            DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
-            socket.receive(packet);
+        ServersOverviewThread serversOverview = new ServersOverviewThread(serverLocations, selectedServerLocation -> {
+            serverCollector.stopCollecting();
+            connectTo(selectedServerLocation);
+        });
+        serversOverview.start();
+    }
 
-            address = packet.getAddress();
-            int port = packet.getPort();
-            packet = new DatagramPacket(BUFFER, BUFFER.length, address, port);
-            receivedData = new String(packet.getData(), 0, packet.getLength());
-        }
-
-        System.out.println(receivedData);
-        String[] receivedDataParts = receivedData.split("__");
-        String serverName = receivedDataParts[0];
-        int portNumber = Integer.parseInt(receivedDataParts[1].trim());
-
-        try (Socket kkSocket = new Socket(address, portNumber);
+    private static void connectTo(final ServerLocation selectedServerLocation) {
+        System.out.println("Connecting to: " + selectedServerLocation);
+        try (Socket kkSocket = new Socket(selectedServerLocation.getAddress(), selectedServerLocation.getPortNumber());
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
 
@@ -90,11 +80,56 @@ public class KnockKnockClient {
 
         } catch (IOException e) {
             System.err.println("Unexpected exception occurred: " + e);
+            e.printStackTrace();
             System.exit(1);
         }
 
         System.exit(0);
     }
+
+    public static class ServersCollector extends Thread {
+
+        private final AtomicBoolean running = new AtomicBoolean(false);
+        private final Consumer<ServerLocation> serverLocationConsumer;
+
+        private ServersCollector(final Consumer<ServerLocation> serverLocationConsumer) {
+            this.serverLocationConsumer = serverLocationConsumer;
+        }
+
+        @Override
+        public void run() {
+            running.set(true);
+            while (running.get()) {
+                // in case multiple clients try to bind the same address and port exception will occur for the second client
+                // (Address already in use), therefore "Reuse" flag is used in order to counter the problem
+                // (https://docs.oracle.com/javase/8/docs/api/java/net/DatagramSocket.html#setReuseAddress-boolean-)
+                //        try (DatagramSocket socket = new DatagramSocket(6666)) {
+                try (DatagramSocket socket = new DatagramSocket(null)) {
+                    socket.setReuseAddress(true);
+                    socket.bind(new InetSocketAddress(6666));
+                    byte[] buffer = new byte[256];
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                    socket.receive(packet);
+
+                    InetAddress address = packet.getAddress();
+                    int port = packet.getPort();
+                    packet = new DatagramPacket(buffer, buffer.length, address, port);
+                    String receivedData = new String(packet.getData(), 0, packet.getLength());
+                    ServerLocation serverLocation = ServerLocation.of(address, receivedData);
+                    serverLocationConsumer.accept(serverLocation);
+                    System.out.println(serverLocation);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void stopCollecting() {
+            running.set(false);
+        }
+
+    }
+
 
     public static class InputCollector extends Thread {
         private final Consumer<String> inputConsumer;
