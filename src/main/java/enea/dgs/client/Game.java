@@ -1,6 +1,6 @@
 package enea.dgs.client;
 
-import enea.dgs.client.ui.components.ServerLocationButton;
+import enea.dgs.client.ui.components.Quad;
 import enea.dgs.client.ui.structure.Vector2;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -8,10 +8,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -22,22 +18,12 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class ServersOverviewThread extends Thread {
+public class Game {
 
     private static final Vector2<Integer> RESOLUTION = Vector2.of(640, 480);
-
-    private final Set<ServerLocation> serverLocations;
-    private final Consumer<ServerLocation> serverSelectionCallback;
-    private final List<ServerLocationButton> serverSelectionButtons = new ArrayList<>();
+    private final Quad avatar = new Quad(RESOLUTION, Vector2.of(0.2f, 0.2f), 0.8f);
     private long window;
 
-    public ServersOverviewThread(final Set<ServerLocation> serverLocations, Consumer<ServerLocation> serverSelectionCallback) {
-        super("WindowThread");
-        this.serverLocations = serverLocations;
-        this.serverSelectionCallback = serverSelectionCallback;
-    }
-
-    @Override
     public void run() {
         init();
         loop();
@@ -66,35 +52,31 @@ public class ServersOverviewThread extends Thread {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(RESOLUTION.getX(), RESOLUTION.getY(), "Server List!", NULL, NULL);
+        window = glfwCreateWindow(RESOLUTION.getX(), RESOLUTION.getY(), "GAME!", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
-
-
-        // Callback for left mouse button click when choosing the server
-        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-                double[] mouseX = new double[1];
-                double[] mouseY = new double[1];
-                glfwGetCursorPos(window, mouseX, mouseY);
-                Vector2<Integer> clickCoordinates = Vector2.of((int) mouseX[0], (int) mouseY[0]);
-                serverSelectionButtons
-                        .stream()
-                        .filter(serverSelectionButton ->
-                                serverSelectionButton.getButton().checkForCollisionWith(clickCoordinates))
-                        .findFirst()
-                        .map(ServerLocationButton::getServerLocation)
-                        .ifPresent(serverLocation -> {
-                            glfwSetWindowShouldClose(window, true);
-                            serverSelectionCallback.accept(serverLocation);
-                        });
-            }
-        });
 
         // Set up a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+
+            switch (key) {
+                case GLFW_KEY_W:
+                    avatar.moveUp();
+                    break;
+                case GLFW_KEY_S:
+                    avatar.moveDown();
+                    break;
+                case GLFW_KEY_A:
+                    avatar.moveLeft();
+                    break;
+                case GLFW_KEY_D:
+                    avatar.moveRight();
+                    break;
+                default:
+            }
+
         });
 
         // Get the thread stack and push a new frame
@@ -127,34 +109,10 @@ public class ServersOverviewThread extends Thread {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            // display server selection buttons
-            constructServerSelectionButtons();
-            displayServerSelectionButtons();
-
+            avatar.draw();
             glfwSwapBuffers(window);
         }
-    }
-
-    private void constructServerSelectionButtons() {
-        // TODO: remove servers which stopped being available
-        // TODO: optimize
-        synchronized (serverLocations) {
-            serverLocations
-                    .stream()
-                    .filter(serverLocation -> serverSelectionButtons
-                            .stream()
-                            .map(ServerLocationButton::getServerLocation)
-                            .noneMatch(buttonedServerLocation -> buttonedServerLocation.equals(serverLocation)))
-                    .forEach(serverLocation -> {
-                        int i = serverSelectionButtons.size();
-                        serverSelectionButtons.add(new ServerLocationButton(RESOLUTION, i * 0.15f, serverLocation));
-                    });
-        }
-    }
-
-    private void displayServerSelectionButtons() {
-        serverSelectionButtons.forEach(serverLocationButton -> serverLocationButton.getButton().draw());
+        System.out.println("Game finished!");
     }
 
 }

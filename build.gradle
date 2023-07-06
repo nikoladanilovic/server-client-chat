@@ -6,7 +6,6 @@ group 'enea.dgs'
 version '1.0'
 
 project.ext.lwjglVersion = '3.3.2'
-project.ext.jomlVersion = "1.10.5"
 project.ext.lwjglNatives = 'natives-windows'
 
 jar {
@@ -43,7 +42,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
-    implementation "org.joml:joml:${jomlVersion}"
 }
 
 test {

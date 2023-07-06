@@ -34,7 +34,6 @@ package enea.dgs.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +45,6 @@ import java.util.function.Consumer;
  */
 public class Client {
 
-
     public static void main(String[] args) {
         Set<ServerLocation> serverLocations = new HashSet<>();
         ServersCollector serverCollector = new ServersCollector(serverLocations::add);
@@ -54,35 +52,16 @@ public class Client {
 
         ServersOverviewThread serversOverview = new ServersOverviewThread(serverLocations, selectedServerLocation -> {
             serverCollector.stopCollecting();
-            connectTo(selectedServerLocation);
+            new ServerConnection(selectedServerLocation).start();
         });
         serversOverview.start();
-    }
-
-    private static void connectTo(final ServerLocation selectedServerLocation) {
-        System.out.println("Connecting to: " + selectedServerLocation);
-        try (Socket kkSocket = new Socket(selectedServerLocation.getAddress(), selectedServerLocation.getPortNumber());
-                PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
-
-            String fromServer;
-
-            InputCollector inputCollector = new InputCollector(out::println);
-            inputCollector.start();
-
-            while ((fromServer = in.readLine()) != null) {
-                System.out.println(fromServer);
-                if (fromServer.equals("Bye"))
-                    break;
-            }
-
-            inputCollector.stopCollecting();
-
-        } catch (IOException e) {
-            System.err.println("Unexpected exception occurred: " + e);
+        try {
+            serversOverview.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            System.exit(1);
         }
+
+        new Game().run();
 
         System.exit(0);
     }
@@ -129,7 +108,6 @@ public class Client {
         }
 
     }
-
 
     public static class InputCollector extends Thread {
         private final Consumer<String> inputConsumer;

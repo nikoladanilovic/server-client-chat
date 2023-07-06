@@ -1,0 +1,45 @@
+package enea.dgs.client;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class ServerConnection extends Thread {
+
+    private final ServerLocation serverLocation;
+    
+    public ServerConnection(final ServerLocation serverLocation) {
+        super("ServerConnection");
+        this.serverLocation = serverLocation;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Connecting to: " + serverLocation);
+        try (Socket kkSocket = new Socket(serverLocation.getAddress(), serverLocation.getPortNumber());
+                PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
+
+            String fromServer;
+
+            Client.InputCollector inputCollector = new Client.InputCollector(out::println);
+            inputCollector.start();
+
+            while ((fromServer = in.readLine()) != null) {
+                System.out.println(fromServer);
+                if (fromServer.equals("Bye"))
+                    break;
+            }
+
+            inputCollector.stopCollecting();
+
+        } catch (IOException e) {
+            System.err.println("Unexpected exception occurred: " + e);
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+}
