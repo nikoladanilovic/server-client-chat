@@ -22,17 +22,23 @@ public class ServerConnection extends Thread {
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
 
-            String fromServer;
+            String serverMessage;
 
             Client.InputCollector inputCollector = new Client.InputCollector(out::println);
             inputCollector.start();
 
-            while ((fromServer = in.readLine()) != null) {
-                System.out.println(fromServer);
-                if (fromServer.equals("Bye"))
+            MoveEventSubscriber avatarMoveEventSubscriber =
+                    AvatarMoveEventSubscriber.of(msg -> out.println(msg.encode()));
+            avatarMoveEventSubscriber.attach();
+
+            while ((serverMessage = in.readLine()) != null) {
+                System.out.println(serverMessage);
+                if (serverMessage.equals("Bye"))
                     break;
+                EventBus.getInstance().sendEnemyMoveEvent(EventMessage.of(serverMessage));
             }
 
+            avatarMoveEventSubscriber.detach();
             inputCollector.stopCollecting();
 
         } catch (IOException e) {

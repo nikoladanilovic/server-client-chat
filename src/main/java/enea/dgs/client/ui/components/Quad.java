@@ -1,6 +1,7 @@
 package enea.dgs.client.ui.components;
 
 import enea.dgs.client.ui.structure.Vector2;
+import enea.dgs.client.ui.structure.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Quad {
     private final int width;
     private final int height;
     private final List<Vector2<Float>> vertices = new ArrayList<>();
+    protected Vector3<Float> color = Vector3.of(0.0f, 0.0f, 1.0f);
 
     public Quad(Vector2<Integer> windowResolution, Vector2<Float> sizeToWindowRation, float yOffset) {
         yOffset += 0.1f; // first button should not be drawn on the top of the window
@@ -45,7 +47,7 @@ public class Quad {
 
     public void draw() {
         glBegin(GL_QUADS);
-        glColor3f(0.0f, 0.0f, 1.0f);
+        glColor3f(color.getX(), color.getY(), color.getZ());
         vertices.forEach(vertex -> glVertex2f(vertex.getX(), vertex.getY()));
         glEnd();
     }
@@ -66,7 +68,7 @@ public class Quad {
         move(Vector2.of(0.1f, 0f));
     }
 
-    private void move(Vector2<Float> direction) {
+    protected void move(Vector2<Float> direction) {
         List<Vector2<Float>> newVertices = vertices
                 .stream()
                 .map(vertex -> Vector2.of(vertex.getX() + direction.getX(), vertex.getY() + direction.getY()))
@@ -74,6 +76,15 @@ public class Quad {
 
         vertices.clear();
         vertices.addAll(newVertices);
+    }
+
+    public List<Vector2<Float>> getVertices() {
+        return List.copyOf(vertices);
+    }
+
+    public void update(List<Vector2<Float>> location) {
+        vertices.clear();
+        vertices.addAll(location);
     }
 
 }

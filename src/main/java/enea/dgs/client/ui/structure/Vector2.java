@@ -1,6 +1,9 @@
 package enea.dgs.client.ui.structure;
 
-public class Vector2<T> {
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
+public class Vector2<T extends Number> {
 
     private final T x;
     private final T y;
@@ -10,8 +13,12 @@ public class Vector2<T> {
         this.y = y;
     }
 
-    public static <T> Vector2<T> of(final T x, final T y) {
+    public static <T extends Number> Vector2<T> of(final T x, final T y) {
         return new Vector2<>(x, y);
+    }
+
+    public static Vector2<Float> of(final String x, final String y) {
+        return new Vector2<>(Float.valueOf(x), Float.valueOf(y));
     }
 
     public T getX() {
@@ -20,6 +27,13 @@ public class Vector2<T> {
 
     public T getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        DecimalFormat decimalFormat = new DecimalFormat("0.0");
+        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        return decimalFormat.format(x) + "," + decimalFormat.format(y);
     }
 
 }

@@ -12,6 +12,9 @@ jar {
     manifest {
         attributes "Main-Class": "enea.dgs.client.Client"
     }
+    from {
+        configurations.runtimeClasspath.filter{ it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {

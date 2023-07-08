@@ -1,5 +1,7 @@
 package enea.dgs.client;
 
+import enea.dgs.client.ui.components.Avatar;
+import enea.dgs.client.ui.components.Enemy;
 import enea.dgs.client.ui.components.Quad;
 import enea.dgs.client.ui.structure.Vector2;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -8,6 +10,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -21,12 +25,22 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Game {
 
     private static final Vector2<Integer> RESOLUTION = Vector2.of(640, 480);
-    private final Quad avatar = new Quad(RESOLUTION, Vector2.of(0.2f, 0.2f), 0.8f);
+    private final Avatar avatar = new Avatar(RESOLUTION, Vector2.of(0.2f, 0.2f), 0.8f);
+    private final Map<String, Quad> enemies = new HashMap<>();
     private long window;
 
     public void run() {
+        MoveEventSubscriber enemyMoveEventSubscriber = EnemyMoveEventSubscriber.of(msg -> {
+            Enemy enemy = msg.decode();
+            enemies.putIfAbsent(enemy.getClientID(), new Quad(RESOLUTION, Vector2.of(0.2f, 0.2f), 0.8f));
+            enemies.get(enemy.getClientID()).update(enemy.getLocation());
+        });
+        enemyMoveEventSubscriber.attach();
+
         init();
         loop();
+
+        enemyMoveEventSubscriber.detach();
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
@@ -109,6 +123,7 @@ public class Game {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            enemies.values().forEach(Quad::draw);
             avatar.draw();
             glfwSwapBuffers(window);
         }

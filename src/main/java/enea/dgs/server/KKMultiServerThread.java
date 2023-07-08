@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class KKMultiServerThread extends Thread {
     private final Socket socket;
@@ -58,9 +60,14 @@ public class KKMultiServerThread extends Thread {
 
             ClientMessageObserver messageObserver = ClientMessageObserver.of((clientID, message) -> {
                 if (!identifier.equals(clientID))
-                    out.println(clientID + ": " + message);
+                    out.println(clientID + "!" + message);
             });
             messageObserver.attach();
+
+            // send to client last received messages from the other clients
+            Executors.newSingleThreadScheduledExecutor().schedule(
+                    () -> LastKnownPlayerLocations.getInstance().getKnownLocations(identifier).forEach(out::println),
+                    1000L, TimeUnit.MILLISECONDS);
 
             String inputLine;
             String outputLine;
