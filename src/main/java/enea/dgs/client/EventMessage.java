@@ -42,4 +42,9 @@ public class EventMessage {
         return ENEMY_LOCATION.matcher(encodedMessage).matches();
     }
 
+    @Override
+    public String toString() {
+        return encodedMessage;
+    }
+
 }

@@ -6,7 +6,7 @@ group 'enea.dgs'
 version '1.0'
 
 project.ext.lwjglVersion = '3.3.2'
-project.ext.lwjglNatives = 'natives-windows'
+project.ext.lwjglNatives = 'natives-linux'
 
 jar {
     manifest {
@@ -45,8 +45,25 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+    testImplementation 'org.testng:testng:7.7.1'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation 'org.mockito:mockito-inline:5.1.1'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
-test {
-    useJUnitPlatform()
+test { //this is the gradle task to be executed
+    useTestNG() { //Tells Gradle to use TestNG
+        useDefaultListeners = true // Tells TestNG to execute its default reporting structure
+//        suites 'src/test/suite.xml' //location of our suite.xml
+    }
 }
+
+//task smokeTests(type: Test) { // we define a task with name ‘smokeTests’
+//    useTestNG() {
+//        useDefaultListeners = true
+//        suites 'src/test/suite.xml'
+//        includeGroups 'smoke' // We define the group name by using ‘includeGroups’ parameter.
+//    }
+//}
