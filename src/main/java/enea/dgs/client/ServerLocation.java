@@ -12,7 +12,7 @@ public class ServerLocation {
     private final InetAddress address;
     private final int portNumber;
 
-    private ServerLocation(final String name, final InetAddress address, final int portNumber) {
+    public ServerLocation(final String name, final InetAddress address, final int portNumber) {
         this.name = name;
         this.address = address;
         this.portNumber = portNumber;

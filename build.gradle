@@ -6,7 +6,7 @@ group 'enea.dgs'
 version '1.0'
 
 project.ext.lwjglVersion = '3.3.2'
-project.ext.lwjglNatives = 'natives-linux'
+project.ext.lwjglNatives = 'natives-windows'
 
 jar {
     manifest {
